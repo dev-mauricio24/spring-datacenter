@@ -1,6 +1,6 @@
 package com.datacenter.eud.course.course_spring.api;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,52 +14,47 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.datacenter.eud.course.course_spring.dto.RegionDTO;
-import com.datacenter.eud.course.course_spring.services.RegionService;
+import com.datacenter.eud.course.course_spring.dto.CountryDTO;
+import com.datacenter.eud.course.course_spring.services.CountryService;
 import com.datacenter.eud.course.course_spring.util.exception.DatoNoExisteException;
 import com.datacenter.eud.course.course_spring.util.exception.DatoYaExisteException;
 
 import jakarta.validation.Valid;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/region")
-public class RegionApi {
-
-	private final RegionService service;
-
-	// @Autowired
-	public RegionApi(RegionService service) {
-		this.service = service;
-	}
-
-//    @GetMapping
-//    public void getAll1() {
-//        service.execute();
-//    }
-
+@RequestMapping("/api/country")
+@RequiredArgsConstructor
+public class CountryApi {
+	
+	@NonNull
+	private CountryService service;
+	
 	@GetMapping
-	public List<RegionDTO> getAll() {
-		return this.service.getAll();
+	public ResponseEntity<?> getAll() {
+		return ResponseEntity.ok(this.service.getAll());
 	}
-
+	
 	@GetMapping("/{id}")
-	public ResponseEntity<RegionDTO> getById(@PathVariable Long id) {
-		RegionDTO dto = this.service.getById(id);
-
-		if (dto != null) {
-			return ResponseEntity.ok(dto);
+	public ResponseEntity<?> getById(@PathVariable String id) {
+		
+		 return Optional.ofNullable(this.service.getById(id))
+                 .map(ResponseEntity::ok)
+                 .orElseGet(() -> ResponseEntity.notFound().build());
+		/*CountryDTO countryDto = this.service.getById(id);
+		if(countryDto != null) {
+			return ResponseEntity.ok(countryDto);
 		} else {
-			return ResponseEntity.noContent().build();
-		}
+			return ResponseEntity.notFound().build();
+		}*/
 	}
-
+	
 	@PostMapping()
-	public ResponseEntity<?> create(@RequestBody @Valid RegionDTO dto) {
+	public ResponseEntity<?> create(@RequestBody @Valid CountryDTO dto) {
 		try {
 			Assert.notNull(dto.getId(), "ID es nulo");
-
 			this.service.create(dto);
-
 			return ResponseEntity.ok().build();
 		} catch (DatoYaExisteException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -69,7 +64,7 @@ public class RegionApi {
 	}
 
 	@PutMapping("update/{id}")
-	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid RegionDTO dto) {
+	public ResponseEntity<?> update(@PathVariable String id, @RequestBody @Valid CountryDTO dto) {
 		try {
 			dto.setId(id);
 			this.service.update(dto);
@@ -81,7 +76,7 @@ public class RegionApi {
 	}
 	
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id) {
+	public ResponseEntity<?> delete(@PathVariable String id) {
 		try {						
 			this.service.delete(id);
 			

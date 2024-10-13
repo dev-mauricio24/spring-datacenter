@@ -10,17 +10,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "regions")
+@Table(name = "COUNTRIES")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegionEntity {
-
-    @Id
-    @Column(name = "region_id")
-    private Long id;
-
-    @Column(name = "region_name")
-    private String name;
+public class CountryEntity {
+	@Id
+	@Column(name = "COUNTRY_ID")
+	private String id;
+	@Column(name = "COUNTRY_NAME")
+	private String name;
+	@Column(name = "region_id")
+	private Long regionId;
 }
