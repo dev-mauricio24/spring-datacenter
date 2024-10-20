@@ -34,4 +34,9 @@ public class EmployeeApi {
 	public void execute() {
 		this.service.execute();
 	}
+	
+	@PostMapping("/query")
+	public void executeQuery() {
+		this.service.executeQuery();
+	}
 }
